@@ -1,0 +1,1 @@
+This project reworks the previous Change Calculator project but uses React JS and uses BootStrap to style inputs and grid elements. 
