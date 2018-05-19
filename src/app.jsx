@@ -14,7 +14,8 @@ class App extends Component {
       quarters: 0,
       dimes: 0,
       nickels: 0,
-      pennies: 0
+      pennies: 0,
+      alert: true,
     }
     this.handleOnChange = this.handleOnChange.bind(this);
     this.handleSubmit = this.handleSubmit.bind(this);
@@ -24,37 +25,54 @@ class App extends Component {
     this.setState({[event.target.name]: event.target.value})
   }
 
-  handleSubmit(event) {
-    event.preventDefault();
-    const amount = parseFloat(this.state.amountReceived) - parseFloat(this.state.amountDue); 
-    var cents = (amount*100); 
-      if (isNaN (cents) || cents < 0 || cents > 99999 ) {
-          alert ("DAS NOT MUNEYZ");
-          cents = 0; // alert if non numbers are entered.
-      }
-
-      const twenty = Math.floor(cents/2000);     cents = cents % 2000;
-      const ten = Math.floor(cents/1000);     cents = cents % 1000;
-      const five= Math.floor(cents/500);     cents = cents % 500;
-      const one = Math.floor(cents/100);     cents = cents % 100;
-      const quarter = Math.floor(cents/25);     cents = cents % 25;
-      const dime = Math.floor(cents/10);        cents = cents % 10;
-      const nickel = Math.floor(cents/5);      
-      const penny = Math.round(cents % 5);
-      this.setState({
-        change: amount.toFixed(2),
-        twenties: twenty,
-        tens: ten,
-        fives: five,
-        ones: one,
-        quarters: quarter,
-        dimes: dime,
-        nickels: nickel,
-        pennies: penny
-      })
+  success() {
+    return (
+      <div className="alert alert-success text-center" role="alert">The total change due is ${this.state.change}</div>
+    );
   }
 
+  failure() {
+    return(
+      <div className="alert alert-danger text-center" role="alert">No change or more funds needed!</div>
+    );
+  }
+
+  handleSubmit(event) {
+    event.preventDefault();
+    const amount = parseFloat(this.state.amountReceived) - parseFloat(this.state.amountDue);
+    var alert = amount >  0 ? true : false; 
+    var cents = (amount*100); 
+    const twenty = Math.floor(cents/2000);     cents = cents % 2000;
+    const ten = Math.floor(cents/1000);     cents = cents % 1000;
+    const five= Math.floor(cents/500);     cents = cents % 500;
+    const one = Math.floor(cents/100);     cents = cents % 100;
+    const quarter = Math.floor(cents/25);     cents = cents % 25;
+    const dime = Math.floor(cents/10);        cents = cents % 10;
+    const nickel = Math.floor(cents/5);      
+    const penny = Math.round(cents % 5);
+    this.setState({
+      change: amount.toFixed(2),
+      twenties: twenty,
+      tens: ten,
+      fives: five,
+      ones: one,
+      quarters: quarter,
+      dimes: dime,
+      nickels: nickel,
+      pennies: penny,
+      alert: alert
+      });
+  }
+      
+
   render() {
+    var alertCheck = null;
+    if(this.state.alert) {
+      alertCheck = this.success();
+    } else {
+      alertCheck = this.failure();
+    }
+
     return(
       <div className="container">
         <h1 className="text-white">Change Calculator</h1>
@@ -88,7 +106,7 @@ class App extends Component {
             <div className="card text-center">
               <div className="card-body">
 
-                <div className="alert alert-success" role="alert">The total change due is ${this.state.change}</div>
+                {alertCheck}
 
                 <div className="card-deck">
 
